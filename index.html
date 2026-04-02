@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>慧眼识斑·口腔白斑进展分析系统 Demo版</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+    .sidebar {
+      background: linear-gradient(180deg, #0f172a, #111827);
+      color: white;
+      padding: 28px 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+    .brand {
+      margin-bottom: 28px;
+    }
+    .brand-small {
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #99f6e4;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.35;
+    }
+    .brand p {
+      margin: 10px 0 0 0;
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .menu-title {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 24px 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+    .menu {
+      display: grid;
+      gap: 10px;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      color: #e2e8f0;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.04);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .menu-item.active {
+      background: linear-gradient(135deg, rgba(20,184,166,0.18), rgba(8,145,178,0.20));
+      border-color: rgba(45,212,191,0.22);
+      color: white;
+    }
+    .menu-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.08);
+      font-size: 14px;
+      flex: 0 0 28px;
+    }
+    .side-card {
+      margin-top: 28px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .side-card .label {
+      font-size: 12px;
+      color: #99f6e4;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .side-card .value {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .side-card .desc {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+
+    .main {
+      padding: 0 28px 32px 28px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      background: rgba(248,250,252,0.94);
+      backdrop-filter: blur(10px);
+      padding: 22px 0 18px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .topbar h2 {
+      margin: 0;
+      font-size: 30px;
+    }
+    .topbar p {
+      margin: 6px 0 0 0;
+      color: #64748b;
+      font-size: 14px;
+    }
+    .badge-wrap {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #ccfbf1;
+      background: #f0fdfa;
+      color: #0f766e;
+    }
+    .badge.gray {
+      border-color: #e2e8f0;
+      background: white;
+      color: #475569;
+    }
+
+    .section { padding: 24px 0 0 0; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 22px;
+    }
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 28px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+      padding: 26px;
+    }
+    .hero-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-size: 40px;
+      line-height: 1.25;
+      margin: 0 0 16px 0;
+      font-weight: 800;
+    }
+    .hero-title span { color: #0f766e; }
+    .muted {
+      color: #475569;
+      line-height: 1.9;
+      font-size: 16px;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .mini-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 16px;
+    }
+    .mini-item .cn { font-size: 14px; font-weight: 700; }
+    .mini-item .en { font-size: 12px; color: #64748b; margin-top: 6px; }
+
+    .dark-card {
+      position: relative;
+      overflow: hidden;
+      color: white;
+      background: linear-gradient(135deg, #0f766e, #0369a1);
+    }
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+    .bubble.one { width: 180px; height: 180px; right: -40px; top: -40px; }
+    .bubble.two { width: 120px; height: 120px; left: -25px; bottom: -25px; }
+    .dark-content { position: relative; z-index: 2; }
+    .small-upper {
+      font-size: 12px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #ccfbf1;
+      margin-bottom: 12px;
+    }
+    .feature-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .feature-item {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 16px;
+    }
+    .feature-item .num { font-size: 12px; color: #ccfbf1; }
+    .feature-item .title { font-size: 18px; font-weight: 700; margin-top: 6px; }
+    .feature-item .desc { font-size: 14px; color: #ecfeff; margin-top: 6px; }
+
+    .head-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .head-row p {
+      margin: 6px 0 0 0;
+      color: #64748b;
+      font-size: 14px;
+    }
+    .tag {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid #ccfbf1;
+      background: #f0fdfa;
+      color: #0f766e;
+      white-space: nowrap;
+    }
+    .tag.rose { background: #fff1f2; border-color: #ffe4e6; color: #be123c; }
+    .tag.amber { background: #fffbeb; border-color: #fde68a; color: #b45309; }
+    .tag.gray { background: #f8fafc; border-color: #e2e8f0; color: #475569; }
+
+    .upload-box {
+      min-height: 330px;
+      border: 2px dashed #cbd5e1;
+      background: #f8fafc;
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 30px;
+    }
+    .camera {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 2px 10px rgba(15,23,42,0.05);
+      margin-bottom: 16px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 24px;
+    }
+    .btn {
+      padding: 12px 22px;
+      border-radius: 18px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+    }
+    .btn.primary { background: #0f766e; color: white; }
+    .btn.secondary { background: white; color: #0f172a; border: 1px solid #e2e8f0; }
+
+    .info-grid {
+      width: 100%;
+      max-width: 760px;
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .info-box {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 14px;
+      text-align: left;
+    }
+    .info-box .k { font-size: 12px; color: #64748b; }
+    .info-box .v { font-size: 14px; font-weight: 700; margin-top: 8px; }
+
+    .side-stack { display: grid; gap: 22px; }
+    .risk-panel {
+      background: linear-gradient(135deg, #fff1f2, #fff7ed);
+      border: 1px solid #ffe4e6;
+      border-radius: 24px;
+      padding: 22px;
+    }
+    .risk-label { font-size: 14px; color: #64748b; }
+    .risk-value {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      margin-top: 10px;
+    }
+    .risk-main {
+      font-size: 42px;
+      font-weight: 800;
+      color: #be123c;
+    }
+    .risk-sub {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .list { display: grid; gap: 10px; margin-top: 20px; }
+    .list-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid white;
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+    .list-row .lk { font-size: 14px; color: #64748b; }
+    .list-row .lv { font-size: 14px; font-weight: 700; text-align: right; }
+
+    .summary-item {
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 14px;
+    }
+
+    .heat-wrapper {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 18px;
+    }
+    .heatmap {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      background: linear-gradient(135deg, #e2e8f0, #ffedd5, #ffe4e6);
+    }
+    .heatmap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.65;
+      background:
+        radial-gradient(circle at 65% 45%, rgba(244,63,94,0.75), transparent 18%),
+        radial-gradient(circle at 58% 52%, rgba(251,146,60,0.55), transparent 23%),
+        radial-gradient(circle at 40% 55%, rgba(250,204,21,0.45), transparent 17%);
+    }
+    .suspect-circle {
+      position: absolute;
+      left: 58%;
+      top: 42%;
+      width: 100px;
+      height: 66px;
+      border: 2px solid #be123c;
+      border-radius: 50%;
+      transform: rotate(-12deg);
+    }
+    .suspect-tag {
+      position: absolute;
+      left: 57%;
+      top: 63%;
+      font-size: 12px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      padding: 7px 12px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+    }
+    .score-tag {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+    }
+
+    .report-btn {
+      padding: 11px 18px;
+      border: none;
+      border-radius: 18px;
+      background: #0f172a;
+      color: white;
+      font-weight: 700;
+    }
+    .report-wrap {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+    .report-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .report-title {
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .report-sub {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 8px;
+    }
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .report-k { font-size: 14px; color: #64748b; }
+    .report-v.big {
+      font-size: 30px;
+      color: #be123c;
+      font-weight: 800;
+      margin-top: 10px;
+    }
+    .report-v {
+      font-size: 17px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+    .report-desc {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #334155;
+    }
+
+    .footer-banner {
+      background: #0f172a;
+      color: white;
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+    .footer-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+    }
+    .footer-text {
+      color: #cbd5e1;
+      line-height: 1.9;
+      max-width: 860px;
+    }
+    .footer-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-btn {
+      padding: 12px 20px;
+      border-radius: 18px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .footer-btn.light {
+      background: white;
+      color: #0f172a;
+    }
+    .footer-btn.dark {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+      }
+      .grid-2, .grid-main, .footer-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .topbar-inner { flex-direction: column; align-items: flex-start; }
+      .topbar h2 { font-size: 26px; }
+      .hero-title { font-size: 32px; }
+      .mini-grid, .info-grid, .report-grid { grid-template-columns: 1fr; }
+      .risk-main { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-small">Demo版</div>
+        <h1>慧眼识斑<br>口腔白斑进展分析系统</h1>
+        <p>面向项目展示的系统界面，用于呈现图像上传、智能分析、风险评估与结果展示流程。</p>
+      </div>
+
+      <div class="menu-title">菜单栏</div>
+      <div class="menu">
+        <div class="menu-item active"><span class="menu-icon">🏠</span><span>首页总览</span></div>
+        <div class="menu-item"><span class="menu-icon">🖼️</span><span>图像上传</span></div>
+        <div class="menu-item"><span class="menu-icon">🧠</span><span>智能分析</span></div>
+        <div class="menu-item"><span class="menu-icon">📊</span><span>结果展示</span></div>
+        <div class="menu-item"><span class="menu-icon">🔥</span><span>热力图输出</span></div>
+        <div class="menu-item"><span class="menu-icon">📄</span><span>报告中心</span></div>
+        <div class="menu-item"><span class="menu-icon">⚙️</span><span>系统设置</span></div>
+      </div>
+
+      <div class="side-card">
+        <div class="label">当前状态</div>
+        <div class="value">分析流程可展示</div>
+        <div class="desc">支持上传界面、风险结果卡片、可疑区域热力图与报告预览展示。</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div>
+            <h2>口腔白斑进展分析系统</h2>
+            <p>上传病例图像后，可展示识别流程、风险等级与可视化结果页面。</p>
+          </div>
+          <div class="badge-wrap">
+            <div class="badge">Demo版</div>
+            <div class="badge gray">系统展示页</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="section grid-2">
+        <div class="card">
+          <div class="hero-tag">系统主页</div>
+          <h3 class="hero-title">
+            面向口腔图像的
+            <span>智能识别、风险评估与可视化展示</span>
+          </h3>
+          <p class="muted">
+            页面用于展示项目阶段性软件界面，包括图像上传、分析流程、风险等级显示、病灶热力图示意和报告输出预览，适合项目汇报与成果截图展示。
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-item"><div class="cn">图像上传</div><div class="en">Upload</div></div>
+            <div class="mini-item"><div class="cn">智能分析</div><div class="en">Analysis</div></div>
+            <div class="mini-item"><div class="cn">结果展示</div><div class="en">Result</div></div>
+            <div class="mini-item"><div class="cn">报告导出</div><div class="en">Report</div></div>
+          </div>
+        </div>
+
+        <div class="card dark-card">
+          <div class="bubble one"></div>
+          <div class="bubble two"></div>
+          <div class="dark-content">
+            <div class="small-upper">System Overview</div>
+            <h3 style="font-size: 30px; margin: 0;">核心功能模块</h3>
+            <div class="feature-list">
+              <div class="feature-item">
+                <div class="num">01</div>
+                <div class="title">口腔图像上传</div>
+                <div class="desc">支持病例图像导入与样本展示</div>
+              </div>
+              <div class="feature-item">
+                <div class="num">02</div>
+                <div class="title">病灶识别分析</div>
+                <div class="desc">展示模型对可疑区域的分析结果</div>
+              </div>
+              <div class="feature-item">
+                <div class="num">03</div>
+                <div class="title">风险等级评估</div>
+                <div class="desc">输出低、中、高三级风险判定</div>
+              </div>
+              <div class="feature-item">
+                <div class="num">04</div>
+                <div class="title">可视化诊断报告</div>
+                <div class="desc">生成热力图、说明卡片与摘要信息</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section grid-main">
+        <div class="card">
+          <div class="head-row">
+            <div>
+              <h3 style="font-size: 26px; margin: 0;">图像上传与分析流程</h3>
+              <p>Upload & Analysis Workflow</p>
+            </div>
+            <div class="tag">分析流程</div>
+          </div>
+
+          <div class="upload-box">
+            <div class="camera">📷</div>
+            <h4 style="font-size: 22px; margin: 0;">拖拽或上传口腔图像</h4>
+            <p class="muted" style="max-width: 620px; font-size: 14px; margin-top: 10px;">
+              支持 JPG / PNG 格式图像导入，用于展示病例图像上传、预处理与智能分析流程。
+            </p>
+            <div class="btn-row">
+              <button class="btn primary">选择图像</button>
+              <button class="btn secondary">开始分析</button>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-box"><div class="k">样本编号</div><div class="v">Case-025</div></div>
+              <div class="info-box"><div class="k">图像质量</div><div class="v">良好</div></div>
+              <div class="info-box"><div class="k">分析状态</div><div class="v">已完成</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-stack">
+          <div class="card">
+            <div class="head-row">
+              <div><h3 style="font-size: 26px; margin: 0;">风险评估结果</h3></div>
+              <div class="tag rose">结果卡片</div>
+            </div>
+            <div class="risk-panel">
+              <div class="risk-label">风险等级</div>
+              <div class="risk-value">
+                <div class="risk-main">中高风险</div>
+                <div class="risk-sub">建议进一步检查</div>
+              </div>
+              <div class="list">
+                <div class="list-row"><div class="lk">疑似病灶区域</div><div class="lv">左侧颊黏膜</div></div>
+                <div class="list-row"><div class="lk">可疑程度评分</div><div class="lv">0.82</div></div>
+                <div class="list-row"><div class="lk">系统建议</div><div class="lv">结合临床进一步复核</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="head-row">
+              <div><h3 style="font-size: 26px; margin: 0;">系统摘要</h3></div>
+              <div class="tag gray">Summary</div>
+            </div>
+            <div style="display:grid; gap: 12px;">
+              <div class="summary-item">支持图像上传与基础信息展示</div>
+              <div class="summary-item">支持病灶区域分析结果可视化</div>
+              <div class="summary-item">支持风险等级卡片展示</div>
+              <div class="summary-item">支持导出诊断报告界面示意</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section grid-2">
+        <div class="card">
+          <div class="head-row">
+            <div>
+              <h3 style="font-size: 26px; margin: 0;">病灶热力图示意</h3>
+              <p>Heatmap Visualization</p>
+            </div>
+            <div class="tag amber">可视化输出</div>
+          </div>
+          <div class="heat-wrapper">
+            <div class="heatmap">
+              <div class="suspect-circle"></div>
+              <div class="suspect-tag">可疑区域</div>
+              <div class="score-tag">热区强度：0.82</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="head-row">
+            <div>
+              <h3 style="font-size: 26px; margin: 0;">报告导出预览</h3>
+              <p>Report Preview</p>
+            </div>
+            <button class="report-btn">导出 PDF</button>
+          </div>
+
+          <div class="report-wrap">
+            <div class="report-card">
+              <div class="report-title">口腔白斑进展分析报告</div>
+              <div class="report-sub">病例编号：Case-025 ｜ 分析时间：2026-03-18 14:35</div>
+            </div>
+
+            <div class="report-grid">
+              <div class="report-card">
+                <div class="report-k">风险等级</div>
+                <div class="report-v big">中高风险</div>
+              </div>
+              <div class="report-card">
+                <div class="report-k">建议</div>
+                <div class="report-v">建议复诊与进一步检查</div>
+              </div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-k" style="margin-bottom: 8px;">分析说明</div>
+              <div class="report-desc">
+                系统已完成图像导入、疑似区域定位与风险分级展示，可用于演示页面流程、结果呈现形式与可视化输出效果。
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="footer-banner">
+          <div class="footer-grid">
+            <div>
+              <div class="small-upper" style="color:#94a3b8;">For Presentation</div>
+              <p class="footer-title">适合项目汇报、结项截图与页面展示的系统界面</p>
+              <p class="footer-text">
+                页面包含菜单栏、首页概览、上传区、结果区、热力图与报告区，可直接用于展示系统设计思路与功能界面，也可继续替换为你自己的项目名称、病例信息和结果图。
+              </p>
+            </div>
+            <div class="footer-btns">
+              <button class="footer-btn light">查看界面</button>
+              <button class="footer-btn dark">项目说明</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
