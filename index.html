@@ -448,6 +448,114 @@
     .footer-btn.light { background: white; color: #0f172a; }
     .footer-btn.dark { background: rgba(255,255,255,0.08); color: white; border-color: rgba(255,255,255,0.12); }
 
+    /* --- About / model info card --- */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+    }
+    @media (max-width: 1100px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+    .about-card { padding: 30px; }
+    .about-h {
+      font-size: 26px;
+      margin: 0;
+    }
+    .about-sub {
+      color: #64748b;
+      font-size: 14px;
+      margin: 6px 0 0 0;
+    }
+    .info-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .ik { color: #64748b; font-weight: 600; }
+    .info-row .iv { color: #1e293b; line-height: 1.7; }
+    .info-row .iv code {
+      background: #f1f5f9;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-size: 12.5px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .metric {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .metric .label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+    .metric .auc {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f766e;
+      margin-top: 6px;
+    }
+    .metric .extra { font-size: 12px; color: #475569; margin-top: 4px; }
+
+    .threshold-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .thr-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+    .thr-row.low    { border-left: 4px solid #15803d; }
+    .thr-row.medium { border-left: 4px solid #b45309; }
+    .thr-row.high   { border-left: 4px solid #be123c; }
+    .thr-name { font-weight: 700; }
+
+    .scope-card {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 13px;
+      color: #78350f;
+      line-height: 1.8;
+    }
+    .scope-card strong { color: #b45309; }
+
+    .citation-card {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #334155;
+      margin-top: 14px;
+    }
+    .citation-card a { color: #0f766e; word-break: break-all; }
+
     /* --- Toast / status message --- */
     .toast {
       position: fixed;
@@ -712,6 +820,116 @@
       </section>
 
       <section class="section">
+        <div class="card about-card">
+          <div class="head-row">
+            <div>
+              <h3 class="about-h">关于本系统 / About DysPOLNet</h3>
+              <p class="about-sub">模型说明、训练数据、性能指标与使用范围</p>
+            </div>
+            <div class="tag gray">Model Card</div>
+          </div>
+
+          <div class="about-grid">
+            <!-- Left column: model basics -->
+            <div>
+              <div class="info-row">
+                <div class="ik">模型名称</div>
+                <div class="iv"><strong>DysPOLNet</strong>（HKU 牙医学院 Oral Cancer Research Group 开源）</div>
+              </div>
+              <div class="info-row">
+                <div class="ik">原始任务</div>
+                <div class="iv"><strong>二分类</strong>：口腔白斑（Oral Leukoplakia）临床照片 → 异型增生（OED）存在 / 不存在。金标准为活检组织病理。</div>
+              </div>
+              <div class="info-row">
+                <div class="ik">骨干网络</div>
+                <div class="iv">EfficientNet-B2（ImageNet 预训练 → 临床数据微调）<br>+ <code>GlobalAveragePooling2D</code> + BatchNorm + Dropout(0.3) + <code>Dense(1, sigmoid)</code></div>
+              </div>
+              <div class="info-row">
+                <div class="ik">概率校准</div>
+                <div class="iv">Platt Scaling（sklearn LogisticRegression），用于把 sigmoid 原始输出映射到更接近真实概率的数值</div>
+              </div>
+              <div class="info-row">
+                <div class="ik">解释性输出</div>
+                <div class="iv">Grad-CAM 热力图（目标层：<code>global_average_pooling2d</code>）</div>
+              </div>
+              <div class="info-row">
+                <div class="ik">输入要求</div>
+                <div class="iv">JPG / PNG，300×300 输入分辨率（系统自动缩放）；建议为口腔病灶<strong>近距离临床照</strong>，避免开口器、牙齿、口镜遮挡</div>
+              </div>
+              <div class="info-row">
+                <div class="ik">训练样本</div>
+                <div class="iv"><strong>2,073 张</strong>回顾性口腔白斑临床照片<br>来源：HKU 牙科门诊 + 印度 King George's Medical University + 尼日利亚合作机构</div>
+              </div>
+              <div class="info-row">
+                <div class="ik">许可</div>
+                <div class="iv">MIT License（可商用、可修改、需保留原作者署名）</div>
+              </div>
+
+              <h4 style="margin: 24px 0 4px 0; font-size: 16px;">论文报告的性能</h4>
+              <p style="font-size: 12px; color: #64748b; margin: 0 0 8px 0;">来源：Adeoye et al., <em>J Dent Res</em> 2024（PubMed: 39382109）</p>
+              <div class="metric-grid">
+                <div class="metric">
+                  <div class="label">内部验证 AUC</div>
+                  <div class="auc">0.890</div>
+                </div>
+                <div class="metric">
+                  <div class="label">测试集 AUC</div>
+                  <div class="auc">0.882</div>
+                  <div class="extra">Bal. Acc 81.8% · Brier 0.124</div>
+                </div>
+                <div class="metric">
+                  <div class="label">外部验证 AUC</div>
+                  <div class="auc">0.828</div>
+                  <div class="extra">95% CI 0.792–0.864 · Bal. Acc 76.4%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right column: thresholds + scope + citation -->
+            <div>
+              <h4 style="margin: 0 0 6px 0; font-size: 16px;">风险等级映射规则</h4>
+              <p style="font-size: 12px; color: #64748b; margin: 0;">本前端根据 Platt 校准概率把模型的二分类输出映射成 3 级风险展示</p>
+              <div class="threshold-grid">
+                <div class="thr-row low">
+                  <div class="thr-name" style="color:#15803d;">低风险</div>
+                  <div>校准概率 &lt; 10%</div>
+                  <div>论文中"高灵敏度（≥95%）"工作点 ↑，建议常规随访</div>
+                </div>
+                <div class="thr-row medium">
+                  <div class="thr-name" style="color:#b45309;">中风险</div>
+                  <div>10% ≤ 校准概率 &lt; 50%</div>
+                  <div>建议结合临床进一步检查 / 缩短复诊间隔</div>
+                </div>
+                <div class="thr-row high">
+                  <div class="thr-name" style="color:#be123c;">高风险</div>
+                  <div>校准概率 ≥ 50%</div>
+                  <div>原模型二分类正阳性区，建议活检明确病理</div>
+                </div>
+              </div>
+
+              <h4 style="margin: 24px 0 6px 0; font-size: 16px;">适用范围与局限</h4>
+              <div class="scope-card">
+                <strong>✓ 适用于</strong>：口腔白斑（已临床诊断）患者的<strong>异型增生概率辅助评估</strong>，用于决定是否需要活检 / 缩短复诊间隔 / 患者自我监测的研究与教学演示。<br><br>
+                <strong>✗ 不适用于</strong>：(1) 替代活检与病理科医生诊断；(2) 直接判定恶性肿瘤；(3) 异型增生组织学级别（mild / moderate / severe）的细分；(4) 非白斑性口腔病变；(5) 训练数据未充分覆盖的人群与拍摄条件（如非临床近距离照、儿童病例）。<br><br>
+                <strong>⚠ 重要声明</strong>：本系统为 HKU 开源 DysPOLNet 模型的非临床演示部署，<strong>不构成医疗诊断意见</strong>，不能替代口腔病理专科医生的临床判断。所有临床决策须由具资质的医务工作者作出。
+              </div>
+
+              <h4 style="margin: 24px 0 6px 0; font-size: 16px;">引用与来源</h4>
+              <div class="citation-card">
+                Adeoye J, Chaurasia A, Akinshipo A, Suleiman IK, Zheng L-W, Lo AWI, Pu JJ, Bello S, Oginni FO, Agho ET, Braimah RO, Su YX.
+                <strong>A Deep Learning System to Predict Epithelial Dysplasia in Oral Leukoplakia.</strong>
+                <em>J Dent Res.</em> 2024;103(12):1218–1226.
+                DOI: <a href="https://doi.org/10.1177/00220345241272048" target="_blank" rel="noopener">10.1177/00220345241272048</a><br><br>
+                · 论文全文：<a href="https://journals.sagepub.com/doi/10.1177/00220345241272048" target="_blank" rel="noopener">journals.sagepub.com</a><br>
+                · PubMed：<a href="https://pubmed.ncbi.nlm.nih.gov/39382109/" target="_blank" rel="noopener">39382109</a><br>
+                · 模型与权重：<a href="https://github.com/jaadeoye/DysPOLNet" target="_blank" rel="noopener">github.com/jaadeoye/DysPOLNet</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
         <div class="footer-banner">
           <div class="footer-grid">
             <div>
@@ -929,15 +1147,60 @@
       btnExport.disabled = false;
     }
 
-    /* ----- export "report" — simple print-friendly text dump ----- */
+    /* ----- export "report" — JSON with full model_info context ----- */
+    const MODEL_INFO = {
+      name: "DysPOLNet",
+      version: "v1 (paper release)",
+      architecture: "EfficientNet-B2 + GAP + BatchNorm + Dropout + Dense(1, sigmoid)",
+      calibration: "Platt scaling (sklearn LogisticRegression)",
+      explainability: "Grad-CAM @ global_average_pooling2d",
+      task: "Binary classification — Oral Epithelial Dysplasia (OED) presence vs absence in clinical photographs of oral leukoplakia",
+      classes: { "0": "Non-dysplastic", "1": "Dysplastic (any grade)" },
+      input: { format: "JPG/PNG", resolution: "300x300 (auto-resized)" },
+      training: {
+        sample_size: 2073,
+        sources: ["University of Hong Kong", "King George's Medical University (India)", "Nigerian collaborators"],
+        gold_standard: "Histopathology following biopsy"
+      },
+      reported_performance: {
+        internal_validation: { auc: 0.890 },
+        test:                { auc: 0.882, balanced_accuracy: 0.818, brier_score: 0.124 },
+        external_validation: { auc: 0.828, auc_95ci: [0.792, 0.864], balanced_accuracy: 0.764, brier_score: 0.146 }
+      },
+      risk_mapping: {
+        LOW:    "calibrated_probability < 0.10  (high-sensitivity operating point)",
+        MEDIUM: "0.10 <= calibrated_probability < 0.50",
+        HIGH:   "calibrated_probability >= 0.50"
+      },
+      license: "MIT",
+      paper: {
+        title: "A Deep Learning System to Predict Epithelial Dysplasia in Oral Leukoplakia",
+        authors: "Adeoye J, Chaurasia A, Akinshipo A, Suleiman IK, Zheng L-W, Lo AWI, Pu JJ, Bello S, Oginni FO, Agho ET, Braimah RO, Su YX",
+        journal: "Journal of Dental Research",
+        year: 2024,
+        volume: "103(12)",
+        pages: "1218-1226",
+        doi: "10.1177/00220345241272048",
+        pubmed: "39382109",
+        url: "https://journals.sagepub.com/doi/10.1177/00220345241272048"
+      },
+      source_code: "https://github.com/jaadeoye/DysPOLNet",
+      disclaimer:
+        "This system is a non-clinical research/educational demo deployment of the open-source DysPOLNet model. " +
+        "It does NOT constitute medical advice and MUST NOT be used as a substitute for clinical diagnosis by a qualified oral pathologist. " +
+        "All clinical decisions must be made by licensed medical professionals based on histopathology."
+    };
+
     btnExport.addEventListener("click", () => {
       if (!currentResult) return;
       const blob = new Blob(
         [JSON.stringify({
+          report_version: "1.0",
           case_id: currentCaseId,
           timestamp: new Date().toISOString(),
           prediction: currentResult,
           heatmap_url: currentHeatmapUrl,
+          model_info: MODEL_INFO,
         }, null, 2)],
         { type: "application/json" }
       );
